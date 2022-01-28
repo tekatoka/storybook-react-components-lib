@@ -1,0 +1,30 @@
+.loader {
+	border-top-color: #3498db;
+	-webkit-animation: spinner 1.5s linear infinite;
+	animation: spinner 1.5s linear infinite;
+}
+
+input:read-only, input:read-only:focus, input:read-only:hover,
+textarea:read-only, textarea:read-only:focus, textarea:read-only:hover,
+select:disabled, select:disabled:focus, select:disabled:hover {
+  background-color: rgba(237,242,247,1)
+}
+
+
+@-webkit-keyframes spinner {
+	0% {
+		-webkit-transform: rotate(0deg);
+	}
+	100% {
+		-webkit-transform: rotate(360deg);
+	}
+}
+
+@keyframes spinner {
+	0% {
+		transform: rotate(0deg);
+	}
+	100% {
+		transform: rotate(360deg);
+	}
+}

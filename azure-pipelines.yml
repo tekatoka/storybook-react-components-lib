@@ -1,0 +1,51 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+ - master
+
+pool:
+  name: Dev01-Builds
+
+variables:
+  - name: nodejsPath
+    value: 'c:\Programme\nodejs\'
+  - name: version.MajorMinor
+    value: '1.0' # Manually adjust the version number as needed for semantic versioning. Revision is auto-incremented.
+  - name: version.Revision
+    value: $[counter(variables['version.MajorMinor'], 0)]
+  - name: versionNumber
+    value: '$(version.MajorMinor).$(version.Revision)'
+
+name: '$(BuildDefinitionName)_$(SourceBranchName)_$(Date:yyyyMMdd)_$(version.MajorMinor).$(version.Revision)'
+
+steps:
+
+
+- task: CmdLine@2
+  displayName: Build Library
+  inputs:
+    script: |
+      set PATH=%PATH%;$(nodejsPath)
+      npm install && npm version $(versionNumber) --no-git-tag-version && npm run build
+    workingDirectory: '$(System.DefaultWorkingDirectory)/'
+
+- task: CmdLine@2
+  enabled: true
+  displayName: Publish Library to IBB Registry
+  inputs:
+    script: |
+      set PATH=%PATH%;$(nodejsPath)
+      npm publish
+    workingDirectory: '$(System.DefaultWorkingDirectory)/'
+
+#- script: copy $(System.DefaultWorkingDirectory)\ibb-react-component-library-*.tgz $(Build.ArtifactStagingDirectory)
+#  displayName: 'Copy pack'
+#  workingDirectory: '$(System.DefaultWorkingDirectory)/'
+
+#- task: PublishBuildArtifacts@1
+#  inputs:
+#    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+#    ArtifactName: pack
